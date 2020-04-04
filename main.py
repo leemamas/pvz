@@ -1,5 +1,7 @@
 import pygame, sys
 from plants.peashooter import Peashooter
+from plants.sunflower import SunFlower
+from plants.wallnut import WallNut
 
 # 这初始化
 
@@ -19,6 +21,8 @@ backgroup = pygame.image.load(bg_path).convert()
 def main():
     block = pygame.time.Clock()
     peashooter = Peashooter()
+    sunflower=SunFlower()
+    wallnut=WallNut()
     index = 0
     while 1:
 
@@ -28,6 +32,8 @@ def main():
         if index > 13:
             index = 0
         screen.blit(peashooter.images[index % 13], peashooter.rect)
+        screen.blit(sunflower.images[index % 18], sunflower.rect)
+        screen.blit(wallnut.images[index % 16], wallnut.rect)
 
         pygame.display.update()
 
