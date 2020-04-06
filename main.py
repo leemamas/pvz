@@ -42,10 +42,12 @@ def main():
     p1 = []
     peaList=[]
     # sunflower=SunFlower()
+    sunFlowerList=[]
     wallnut=WallNut()
     index = 0
     #是否点击了卡片
     is_pick=False
+    pick_type=None
 
     while 1:
 
@@ -77,6 +79,8 @@ def main():
             screen.blit(p.images[0], p.zone)
         for pea in peaList:
             screen.blit(pea.images[index % 13], pea.zone)
+        for sunFlower in sunFlowerList:
+            screen.blit(sunFlower.images[index % 18], sunFlower.zone)
 
 
 
@@ -93,24 +97,38 @@ def main():
                         if press[0]:
                             p = Peashooter()
                             clickimage.append(p)
+                            pick_type='pea'
                             is_pick=True
 
                     if 400<=x<=400+card1.get_rect().width and 10<=y<=10+card1.get_rect().height:
                         if press[0]:
                             sunflower=SunFlower()
                             clickimage.append(sunflower)
+                            pick_type = 'flower'
                             is_pick = True
                 if is_pick:
                     #330 180  405 274
                     if 330 <= x <= 405 and 180 <= y <= 274:
-                        p=Peashooter()
-                        p.zone=(330,180)
-                        p1.append(p)
-                        if press[0]:
-                            peaList.append(p)
-                            clickimage.clear()
-                            p1.clear()
-                            is_pick=False
+                        if pick_type=='pea':
+                            p=Peashooter()
+                            p.zone=(330,180)
+                            p1.append(p)
+                            if press[0]:
+                                peaList.append(p)
+                                clickimage.clear()
+                                p1.clear()
+                                is_pick=False
+                        elif pick_type=='flower':
+                            f=SunFlower()
+                            f.zone=(330,180)
+                            p1.append(f)
+                            if press[0]:
+                                sunFlowerList.append(f)
+                                clickimage.clear()
+                                p1.clear()
+                                is_pick=False
+
+
 
                     else:
                         p1.clear()
@@ -123,6 +141,7 @@ def main():
 
 
         index += 1
+
 
 
 if __name__ == '__main__':
