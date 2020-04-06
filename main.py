@@ -35,10 +35,18 @@ fontImg=font.render(sunnum,True,(0,0,0))
 # 主函数
 def main():
     block = pygame.time.Clock()
-    peashooter = Peashooter()
-    sunflower=SunFlower()
+    # peashooter = Peashooter()
+    #点击存放卡片的图像
+    clickimage=[]
+    # 临时存放pea
+    p1 = []
+    peaList=[]
+    # sunflower=SunFlower()
     wallnut=WallNut()
     index = 0
+    #是否点击了卡片
+    is_pick=False
+
     while 1:
 
         block.tick(30)
@@ -52,17 +60,67 @@ def main():
         #sunnum
         screen.blit(fontImg, (280, 60))
 
+        #鼠标点击（0，0，0）（1，0，0）
+        press=pygame.mouse.get_pressed()
+        #坐标
+        x,y=pygame.mouse.get_pos()
+
         if index > 13:
             index = 0
-        screen.blit(peashooter.images[index % 13], peashooter.rect)
-        screen.blit(sunflower.images[index % 18], sunflower.rect)
-        screen.blit(wallnut.images[index % 16], wallnut.rect)
+        # screen.blit(peashooter.images[index % 13], peashooter.rect)
+        # screen.blit(sunflower.images[index % 18], sunflower.rect)
+        # screen.blit(wallnut.images[index % 16], wallnut.rect)
+
+        for image in clickimage:
+            screen.blit(image.images[0], (x,y))
+        for p in p1:
+            screen.blit(p.images[0], p.zone)
+        for pea in peaList:
+            screen.blit(pea.images[index % 13], pea.zone)
+
+
 
         pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
+            if event.type==pygame.MOUSEMOTION:
+                # print(x,y)
+                if not is_pick:
+                    if 330<=x<=330+card.get_rect().width and 10<=y<=10+card.get_rect().height:
+                        if press[0]:
+                            p = Peashooter()
+                            clickimage.append(p)
+                            is_pick=True
+
+                    if 400<=x<=400+card1.get_rect().width and 10<=y<=10+card1.get_rect().height:
+                        if press[0]:
+                            sunflower=SunFlower()
+                            clickimage.append(sunflower)
+                            is_pick = True
+                if is_pick:
+                    #330 180  405 274
+                    if 330 <= x <= 405 and 180 <= y <= 274:
+                        p=Peashooter()
+                        p.zone=(330,180)
+                        p1.append(p)
+                        if press[0]:
+                            peaList.append(p)
+                            clickimage.clear()
+                            p1.clear()
+                            is_pick=False
+
+                    else:
+                        p1.clear()
+
+
+                    if press[2]:
+                        clickimage.clear()
+                        is_pick=False
+
+
 
         index += 1
 
