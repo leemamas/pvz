@@ -27,7 +27,7 @@ scale = 0.78
 card = pygame.transform.scale(card, (int(card_rect.width * scale), int(card_rect.height * scale)))
 card1 = pygame.transform.scale(card1, (int(card1_rect.width * scale), int(card1_rect.height * scale)))
 # 阳光数
-sunnum = '0'
+sunnum = '100'
 font = pygame.font.SysFont('arial', 20)
 fontImg = font.render(sunnum, True, (0, 0, 0))
 
@@ -58,41 +58,11 @@ def main():
     while 1:
 
         block.tick(30)
-        # 绘制背景
-        screen.blit(backgroup, (0, 0))
-        # 卡槽
-        screen.blit(card_slot, (250, 0))
-        # card
-        screen.blit(card, (330, 10))
-        screen.blit(card1, (400, 10))
-        # sunnum
-        screen.blit(fontImg, (280, 60))
 
         # 鼠标点击（0，0，0）（1，0，0）
         press = pygame.mouse.get_pressed()
         # 坐标
         x, y = pygame.mouse.get_pos()
-
-        if index > 13:
-            index = 0
-        # screen.blit(peashooter.images[index % 13], peashooter.rect)
-        # screen.blit(sunflower.images[index % 18], sunflower.rect)
-        # screen.blit(wallnut.images[index % 16], wallnut.rect)
-
-        for image in clickimage:
-            screen.blit(image.images[0], (x, y))
-        for p in p1:
-            screen.blit(p.images[0], p.zone)
-        for pea in peaList:
-            screen.blit(pea.images[index % 13], pea.zone)
-        for sunFlower in sunFlowerList:
-            screen.blit(sunFlower.images[index % 18], sunFlower.zone)
-        for sun in sunList:
-            screen.blit(sun.images[index % 22], sun.rect)
-            sun.down()
-
-
-        pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -117,6 +87,19 @@ def main():
                             clickimage.append(sunflower)
                             pick_type = 'flower'
                             is_pick = True
+
+
+                    #是否点击了太阳
+                    for sun in sunList:
+                        if sun.rect.collidepoint((x,y)):
+                            if press[0]:
+                                #点击了太阳消失
+                                sunList.remove(sun)
+                                #收集了太阳加分
+                                global sunnum,font,fontImg
+                                sunnum=str(int(sunnum)+25)
+                                fontImg = font.render(sunnum, True, (0, 0, 0))
+
                 if is_pick :
                     # 330 180  405 274
                     if not is_plant:
@@ -148,6 +131,41 @@ def main():
                     if press[2]:
                         clickimage.clear()
                         is_pick = False
+
+        # 绘制背景
+        screen.blit(backgroup, (0, 0))
+        # 卡槽
+        screen.blit(card_slot, (250, 0))
+        # card
+        screen.blit(card, (330, 10))
+        screen.blit(card1, (400, 10))
+        # sunnum
+        screen.blit(fontImg, (280, 60))
+
+
+
+        if index > 13:
+            index = 0
+        # screen.blit(peashooter.images[index % 13], peashooter.rect)
+        # screen.blit(sunflower.images[index % 18], sunflower.rect)
+        # screen.blit(wallnut.images[index % 16], wallnut.rect)
+
+        for image in clickimage:
+            screen.blit(image.images[0], (x, y))
+        for p in p1:
+            screen.blit(p.images[0], p.zone)
+        for pea in peaList:
+            screen.blit(pea.images[index % 13], pea.zone)
+        for sunFlower in sunFlowerList:
+            screen.blit(sunFlower.images[index % 18], sunFlower.zone)
+        for sun in sunList:
+            screen.blit(sun.images[index % 22], sun.rect)
+            sun.down()
+
+
+        pygame.display.update()
+
+
 
         index += 1
 
