@@ -8,6 +8,15 @@ class Zone:
     X_GRID_LEN=9
     Y_GRID_LEN=5
 
+    def __init__(self):
+        self.plantInfo=(
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0]
+        )
+
     #哪一个区域
     def getIndex(self,x,y):
         x-=Zone.X_OFFSET_MAP
@@ -39,3 +48,4 @@ if __name__ == '__main__':
     a,b=z.getIndex(440,93)
     print(a,b)
     print(z.getGridPos(a,b))
+    print(z.plantInfo[0][2])

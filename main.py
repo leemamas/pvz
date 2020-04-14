@@ -75,71 +75,112 @@ def main():
 
             if event.type == pygame.MOUSEMOTION:
 
-                if z.is_card_slot_zone(x,y,card_slot.get_rect().width,card_slot.get_rect().height):
-                    print('cardslot zone!')
-                elif z.is_plant_zone(x,y):
-                    # print('plant zone !')
-                    print(z.getIndex(x,y))
-                else:
-                    print('other zone!')
-                # if not is_pick:
-                #     if 330 <= x <= 330 + card.get_rect().width and 10 <= y <= 10 + card.get_rect().height:
-                #         if press[0]:
-                #             p = Peashooter()
-                #             clickimage.append(p)
-                #             pick_type = 'pea'
-                #             is_pick = True
-                #
-                #     if 400 <= x <= 400 + card1.get_rect().width and 10 <= y <= 10 + card1.get_rect().height:
-                #         if press[0]:
-                #             sunflower = SunFlower()
-                #             clickimage.append(sunflower)
-                #             pick_type = 'flower'
-                #             is_pick = True
-                #
-                #
-                #     #是否点击了太阳
-                #     for sun in sunList:
-                #         if sun.rect.collidepoint((x,y)):
-                #             if press[0]:
-                #                 #点击了太阳消失
-                #                 sunList.remove(sun)
-                #                 #收集了太阳加分
-                #                 global sunnum,font,fontImg
-                #                 sunnum=str(int(sunnum)+25)
-                #                 fontImg = font.render(sunnum, True, (0, 0, 0))
-                #
-                # if is_pick :
-                #     # 330 180  405 274
-                #     if not is_plant:
-                #         if 330 <= x <= 405 and 180 <= y <= 274:
-                #             if pick_type == 'pea':
-                #                 p = Peashooter()
-                #                 p.zone = (330, 180)
-                #                 p1.append(p)
-                #                 if press[0]:
-                #                     peaList.append(p)
-                #                     clickimage.clear()
-                #                     p1.clear()
-                #                     is_pick = False
-                #                     is_plant=True
-                #             elif pick_type == 'flower':
-                #                 f = SunFlower()
-                #                 f.zone = (330, 180)
-                #                 p1.append(f)
-                #                 if press[0]:
-                #                     sunFlowerList.append(f)
-                #                     clickimage.clear()
-                #                     p1.clear()
-                #                     is_pick = False
-                #                     is_plant = True
-                #
-                #     else:
-                #         p1.clear()
-                #
-                #     if press[2]:
-                #         clickimage.clear()
-                #         is_pick = False
+                # if z.is_card_slot_zone(x,y,card_slot.get_rect().width,card_slot.get_rect().height):
+                #     print('cardslot zone!')
+                # elif z.is_plant_zone(x,y):
+                #     # print('plant zone !')
+                #     print(z.getIndex(x,y))
+                # else:
+                #     print('other zone!')
+                #没有点击卡片
+                if not is_pick:
+                    if press[0]:
+                        if 330 <= x <= 330 + card.get_rect().width and 10 <= y <= 10 + card.get_rect().height:
+                                p = Peashooter()
+                                clickimage.append(p)
+                                pick_type = 'pea'
+                                is_pick = True
+
+                        if 400 <= x <= 400 + card1.get_rect().width and 10 <= y <= 10 + card1.get_rect().height:
+                                sunflower = SunFlower()
+                                clickimage.append(sunflower)
+                                pick_type = 'flower'
+                                is_pick = True
+                else :
+                    if z.is_plant_zone(x,y):
+                        if z.getIndex(x,y) and not is_plant:
+                            if pick_type == 'pea':
+                                p = Peashooter()
+                                a,b=z.getIndex(x,y)
+                                # print(z.getIndex(x,y))
+                                p.zone=z.getGridPos(a,b)
+                                # print('==p==',a,b)
+                                #没有种植物
+                                if  z.plantInfo[b][a]==0:
+                                    p1.append(p)
+                                    is_plant=True
+
+                                    if press[0] :
+                                        peaList.append(p)
+                                        clickimage.clear()
+                                        p1.clear()
+                                        is_pick = False
+                                        z.plantInfo[b][a]=1
+
+                            elif pick_type == 'flower':
+                                f = SunFlower()
+                                a, b = z.getIndex(x, y)
+                                f.zone = z.getGridPos(a, b)
+                                # print('==f==', a, b)
+                                if  z.plantInfo[b][a]==0:
+                                    p1.append(f)
+                                    is_plant = True
+                                    if press[0]:
+                                        sunFlowerList.append(f)
+                                        clickimage.clear()
+                                        p1.clear()
+                                        is_pick = False
+                                        z.plantInfo[b][a] = 1
+                        else:
+                            p1.clear()
+                            is_plant=False
+
+
+                    if press[2]:
+                        is_pick = False
+                        clickimage.clear()
+                        p1.clear()
+                        is_plant = False
+
+                        # if 330 <= x <= 405 and 180 <= y <= 274:
+                        #     if pick_type == 'pea':
+                        #         p = Peashooter()
+                        #         p.zone = (330, 180)
+                        #         p1.append(p)
+                        #         if press[0]:
+                        #             peaList.append(p)
+                        #             clickimage.clear()
+                        #             p1.clear()
+                        #             is_pick = False
+                        #             is_plant=True
+                        #     elif pick_type == 'flower':
+                        #         f = SunFlower()
+                        #         f.zone = (330, 180)
+                        #         p1.append(f)
+                        #         if press[0]:
+                        #             sunFlowerList.append(f)
+                        #             clickimage.clear()
+                        #             p1.clear()
+                        #             is_pick = False
+                        #             is_plant = True
+
+                    # else:
+                    #     p1.clear()
+
+
+
+                #是否点击了太阳
+                for sun in sunList:
+                    if sun.rect.collidepoint((x,y)):
+                        if press[0]:
+                            #点击了太阳消失
+                            sunList.remove(sun)
+                            #收集了太阳加分
+                            global sunnum,font,fontImg
+                            sunnum=str(int(sunnum)+25)
+                            fontImg = font.render(sunnum, True, (0, 0, 0))
+
+
 
         # 绘制背景
         screen.blit(backgroup, (0, 0))
