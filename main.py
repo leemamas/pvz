@@ -56,6 +56,7 @@ def main():
     SUN_EVENT=pygame.USEREVENT+1
     pygame.time.set_timer(SUN_EVENT,1000)
     z=Zone()
+    bulletList=[]
 
     while 1:
 
@@ -112,6 +113,8 @@ def main():
 
                                     if press[0] :
                                         peaList.append(p)
+                                        # bullet=p.shot()
+                                        # bulletList.append(bullet)
                                         clickimage.clear()
                                         p1.clear()
                                         is_pick = False
@@ -205,14 +208,23 @@ def main():
         for p in p1:
             screen.blit(p.images[0], p.zone)
         for pea in peaList:
+            if index%99==1:
+                bullet = pea.shot()
+                bulletList.append(bullet)
             screen.blit(pea.images[index % 13], pea.zone)
         for sunFlower in sunFlowerList:
             screen.blit(sunFlower.images[index % 18], sunFlower.zone)
         for sun in sunList:
             screen.blit(sun.images[index % 22], sun.rect)
             sun.down()
+        for bullet in bulletList:
+            if bullet.status:
+                screen.blit(bullet.image,bullet.rect)
+                bullet.move()
+            else:
+                bulletList.remove(bullet)
 
-
+        # print(len(bulletList))
         pygame.display.update()
 
 
