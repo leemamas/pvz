@@ -4,7 +4,7 @@ from plants.sunflower import SunFlower
 from plants.wallnut import WallNut
 from plants.sun import Sun
 from zone import Zone
-
+from zombie import Zombie
 # 这初始化
 
 pygame.init()
@@ -44,6 +44,10 @@ def main():
     peaList = []
     # sunflower=SunFlower()
     sunFlowerList = []
+    zombieList=[]
+    zombie=Zombie()
+    zombieList.append(zombie)
+
     wallnut = WallNut()
     sunList=[]
     index = 0
@@ -197,7 +201,7 @@ def main():
 
 
 
-        if index > 13:
+        if index > 23:
             index = 0
         # screen.blit(peashooter.images[index % 13], peashooter.rect)
         # screen.blit(sunflower.images[index % 18], sunflower.rect)
@@ -223,6 +227,12 @@ def main():
                 bullet.move()
             else:
                 bulletList.remove(bullet)
+
+        #僵尸
+        for zombie in zombieList:
+            screen.blit(zombie.images[index % 22], zombie.rect)
+            zombie.move()
+
 
         # print(len(bulletList))
         pygame.display.update()
