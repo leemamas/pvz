@@ -216,8 +216,13 @@ def main():
                 bullet = pea.shot()
                 bulletList.append(bullet)
             screen.blit(pea.images[index % 13], pea.zone)
+            #太阳花
         for sunFlower in sunFlowerList:
-            screen.blit(sunFlower.images[index % 18], sunFlower.zone)
+            if sunFlower.isLive:
+                screen.blit(sunFlower.images[index % 18], sunFlower.zone)
+            else:
+                sunFlowerList.remove(sunFlower)
+
         for sun in sunList:
             screen.blit(sun.images[index % 22], sun.rect)
             sun.down()
@@ -232,8 +237,10 @@ def main():
         #僵尸
         for zombie in zombieList:
             if zombie.islive:
-                screen.blit(zombie.images[index % 22], zombie.rect)
+                zombie.changimage()
+                screen.blit(zombie.images[index % 21], zombie.rect)
                 zombie.move()
+                zombie.attack(sunFlowerList)
             else:
                 zombieList.remove(zombie)
 
