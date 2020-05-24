@@ -225,13 +225,17 @@ def main():
             if bullet.status:
                 screen.blit(bullet.image,bullet.rect)
                 bullet.move()
+                bullet.hit(zombieList)
             else:
                 bulletList.remove(bullet)
 
         #僵尸
         for zombie in zombieList:
-            screen.blit(zombie.images[index % 22], zombie.rect)
-            zombie.move()
+            if zombie.islive:
+                screen.blit(zombie.images[index % 22], zombie.rect)
+                zombie.move()
+            else:
+                zombieList.remove(zombie)
 
 
         # print(len(bulletList))
