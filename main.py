@@ -48,6 +48,10 @@ def main():
     zombie=Zombie()
     zombieList.append(zombie)
 
+
+    #僵尸的敌人
+    enemy_zombie_list=[]
+
     wallnut = WallNut()
     sunList=[]
     index = 0
@@ -117,6 +121,7 @@ def main():
 
                                     if press[0] :
                                         peaList.append(p)
+                                        enemy_zombie_list.append(p)
                                         # bullet=p.shot()
                                         # bulletList.append(bullet)
                                         clickimage.clear()
@@ -134,6 +139,7 @@ def main():
                                     is_plant = True
                                     if press[0]:
                                         sunFlowerList.append(f)
+                                        enemy_zombie_list.append(f)
                                         clickimage.clear()
                                         p1.clear()
                                         is_pick = False
@@ -148,31 +154,6 @@ def main():
                         clickimage.clear()
                         p1.clear()
                         is_plant = False
-
-                        # if 330 <= x <= 405 and 180 <= y <= 274:
-                        #     if pick_type == 'pea':
-                        #         p = Peashooter()
-                        #         p.zone = (330, 180)
-                        #         p1.append(p)
-                        #         if press[0]:
-                        #             peaList.append(p)
-                        #             clickimage.clear()
-                        #             p1.clear()
-                        #             is_pick = False
-                        #             is_plant=True
-                        #     elif pick_type == 'flower':
-                        #         f = SunFlower()
-                        #         f.zone = (330, 180)
-                        #         p1.append(f)
-                        #         if press[0]:
-                        #             sunFlowerList.append(f)
-                        #             clickimage.clear()
-                        #             p1.clear()
-                        #             is_pick = False
-                        #             is_plant = True
-
-                    # else:
-                    #     p1.clear()
 
 
 
@@ -199,7 +180,7 @@ def main():
         # sunnum
         screen.blit(fontImg, (280, 60))
 
-
+        print('list:',enemy_zombie_list)
 
         if index > 23:
             index = 0
@@ -211,17 +192,23 @@ def main():
             screen.blit(image.images[0], (x, y))
         for p in p1:
             screen.blit(p.images[0], p.zone)
+        #豌豆
         for pea in peaList:
-            if index%99==1:
-                bullet = pea.shot()
-                bulletList.append(bullet)
-            screen.blit(pea.images[index % 13], pea.zone)
-            #太阳花
+            if pea.isLive:
+                if index%99==1:
+                    bullet = pea.shot()
+                    bulletList.append(bullet)
+                screen.blit(pea.images[index % 13], pea.zone)
+            else:
+                peaList.remove(pea)
+                enemy_zombie_list.remove(pea)
+        #太阳花
         for sunFlower in sunFlowerList:
             if sunFlower.isLive:
                 screen.blit(sunFlower.images[index % 18], sunFlower.zone)
             else:
                 sunFlowerList.remove(sunFlower)
+                enemy_zombie_list.remove(sunFlower)
 
         for sun in sunList:
             screen.blit(sun.images[index % 22], sun.rect)
@@ -240,7 +227,7 @@ def main():
                 zombie.changimage()
                 screen.blit(zombie.images[index % 21], zombie.rect)
                 zombie.move()
-                zombie.attack(sunFlowerList)
+                zombie.attack(enemy_zombie_list)
             else:
                 zombieList.remove(zombie)
 

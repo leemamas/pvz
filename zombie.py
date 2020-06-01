@@ -7,7 +7,7 @@ class Zombie(pygame.sprite.Sprite):
         self.rect.left=1000
         self.rect.top=200
         self.speed=1
-        self.blood=3
+        self.blood=30
         self.islive=True
         self.stop=False
         self.kill=1
