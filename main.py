@@ -64,12 +64,12 @@ def main():
     is_plant=False
     #太阳下落的时间
     SUN_EVENT=pygame.USEREVENT+1
-    pygame.time.set_timer(SUN_EVENT,1000)
+    pygame.time.set_timer(SUN_EVENT,5000)
 
-    #花朵产能事件
-    FLOWER_PRODUCT_SUM_EVENT=pygame.USEREVENT+1
-    #这是1秒，改5
-    pygame.time.set_timer(FLOWER_PRODUCT_SUM_EVENT,5000)
+    # #花朵产能事件
+    # FLOWER_PRODUCT_SUM_EVENT=pygame.USEREVENT+1
+    # #这是1秒，改5
+    # pygame.time.set_timer(FLOWER_PRODUCT_SUM_EVENT,5000)
 
 
     z=Zone()
@@ -94,19 +94,19 @@ def main():
                 #这个是下落的太阳
                 sunList.append(sun)
 
-            #PRODUCT SUM BY FLOWER
-            if event.type==FLOWER_PRODUCT_SUM_EVENT:
-                for flower in sunFlowerList:
-                    #没有生太阳时
-                    if not flower.isProductSum:
-                        #产能
-                        sun = Sun()
-                        #太阳的位置
-                        sun.rect.left,sun.rect.top=flower.rect.left,flower.rect.top
-                        #属于谁？
-                        sun.belong=flower
-                        flower_product_list.append(sun)
-                        flower.isProductSum=True
+            # #PRODUCT SUM BY FLOWER
+            # if event.type==FLOWER_PRODUCT_SUM_EVENT:
+            #     for flower in sunFlowerList:
+            #         #没有生太阳时
+            #         if not flower.isProductSum:
+            #             #产能
+            #             sun = Sun()
+            #             #太阳的位置
+            #             sun.rect.left,sun.rect.top=flower.rect.left,flower.rect.top
+            #             #属于谁？
+            #             sun.belong=flower
+            #             flower_product_list.append(sun)
+            #             flower.isProductSum=True
 
 
 
@@ -206,9 +206,7 @@ def main():
                             # 收集了太阳加分
                             sunnum = str(int(sunnum) + 25)
                             fontImg = font.render(sunnum, True, (0, 0, 0))
-                            #当收集了，花朵可以再次生能里
-                            #但是我们不知道太阳是那个花朵生成？
-                            #知道是那个就可以确定收集完，可以改变他再次生成的属性
+
                             sun.belong.isProductSum=False
 
 
@@ -233,7 +231,7 @@ def main():
 
         #它是不断产生？？
         #它是重叠起来看不出，其实是一直产生的，我们要控制它生成1个，
-        print('listlen:',len(flower_product_list))
+        # print('listlen:',len(flower_product_list))
 
         for image in clickimage:
             screen.blit(image.images[0], (x, y))
@@ -250,16 +248,29 @@ def main():
                 peaList.remove(pea)
                 enemy_zombie_list.remove(pea)
         #太阳花
+        # print('产出的能量数量',len(flower_product_list))
         for sunFlower in sunFlowerList:
             if sunFlower.isLive:
+
                 screen.blit(sunFlower.images[index % 18], sunFlower.zone)
+                # print('{},位置的花朵,是否产出了太阳{},速率{}'.format(sunFlower.zone,sunFlower.isProductSum,sunFlower.product_sun_rate))
+                if not sunFlower.isProductSum:
+                    sunFlower.product_sun_rate+=1
+                    if sunFlower.product_sun_rate==100:
+                        sunFlower.productSun(flower_product_list)
+                        sunFlower.isProductSum=True
+                        sunFlower.product_sun_rate=0
+
             else:
                 sunFlowerList.remove(sunFlower)
                 enemy_zombie_list.remove(sunFlower)
 
+        print('num:',len(sunList))
         for sun in sunList:
             screen.blit(sun.images[index % 22], sun.rect)
             sun.down()
+            if sun.rect.top>600:
+                sunList.remove(sun)
         #花朵生的太阳渲染
         for sun in flower_product_list:
             screen.blit(sun.images[index % 22], sun.rect)
