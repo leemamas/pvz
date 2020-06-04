@@ -48,9 +48,11 @@ def main():
     zombie=Zombie()
     zombieList.append(zombie)
 
-
     #僵尸的敌人
     enemy_zombie_list=[]
+
+    #花朵产生的太阳列表
+    flower_product_list=[]
 
     wallnut = WallNut()
     sunList=[]
@@ -63,6 +65,13 @@ def main():
     #太阳下落的时间
     SUN_EVENT=pygame.USEREVENT+1
     pygame.time.set_timer(SUN_EVENT,1000)
+
+    #花朵产能事件
+    FLOWER_PRODUCT_SUM_EVENT=pygame.USEREVENT+1
+    #这是1秒，改5
+    pygame.time.set_timer(FLOWER_PRODUCT_SUM_EVENT,5000)
+
+
     z=Zone()
     bulletList=[]
 
@@ -78,9 +87,29 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            # if event.type==SUN_EVENT:
-            #     sun=Sun()
-            #     sunList.append(sun)
+
+            #太阳下落
+            if event.type==SUN_EVENT:
+                sun=Sun()
+                #这个是下落的太阳
+                sunList.append(sun)
+
+            #PRODUCT SUM BY FLOWER
+            if event.type==FLOWER_PRODUCT_SUM_EVENT:
+                for flower in sunFlowerList:
+                    #没有生太阳时
+                    if not flower.isProductSum:
+                        #产能
+                        sun = Sun()
+                        #太阳的位置
+                        sun.rect.left,sun.rect.top=flower.rect.left,flower.rect.top
+                        #属于谁？
+                        sun.belong=flower
+                        flower_product_list.append(sun)
+                        flower.isProductSum=True
+
+
+
 
             if event.type == pygame.MOUSEMOTION:
 
@@ -157,7 +186,7 @@ def main():
 
 
 
-                #是否点击了太阳
+                #是否点击了下落太阳
                 for sun in sunList:
                     if sun.rect.collidepoint((x,y)):
                         if press[0]:
@@ -167,6 +196,21 @@ def main():
                             global sunnum,font,fontImg
                             sunnum=str(int(sunnum)+25)
                             fontImg = font.render(sunnum, True, (0, 0, 0))
+
+                # 是否点击了下落太阳
+                for sun in flower_product_list:
+                    if sun.rect.collidepoint((x, y)):
+                        if press[0]:
+                            # 点击了太阳消失
+                            flower_product_list.remove(sun)
+                            # 收集了太阳加分
+                            sunnum = str(int(sunnum) + 25)
+                            fontImg = font.render(sunnum, True, (0, 0, 0))
+                            #当收集了，花朵可以再次生能里
+                            #但是我们不知道太阳是那个花朵生成？
+                            #知道是那个就可以确定收集完，可以改变他再次生成的属性
+                            sun.belong.isProductSum=False
+
 
 
 
@@ -180,13 +224,16 @@ def main():
         # sunnum
         screen.blit(fontImg, (280, 60))
 
-        print('list:',enemy_zombie_list)
 
         if index > 23:
             index = 0
         # screen.blit(peashooter.images[index % 13], peashooter.rect)
         # screen.blit(sunflower.images[index % 18], sunflower.rect)
         # screen.blit(wallnut.images[index % 16], wallnut.rect)
+
+        #它是不断产生？？
+        #它是重叠起来看不出，其实是一直产生的，我们要控制它生成1个，
+        print('listlen:',len(flower_product_list))
 
         for image in clickimage:
             screen.blit(image.images[0], (x, y))
@@ -213,6 +260,10 @@ def main():
         for sun in sunList:
             screen.blit(sun.images[index % 22], sun.rect)
             sun.down()
+        #花朵生的太阳渲染
+        for sun in flower_product_list:
+            screen.blit(sun.images[index % 22], sun.rect)
+
         for bullet in bulletList:
             if bullet.status:
                 screen.blit(bullet.image,bullet.rect)

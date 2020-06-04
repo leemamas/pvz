@@ -9,6 +9,8 @@ class Sun(pygame.sprite.Sprite):
         self.rect.left=random.choice([200,300,400])
         self.rect.top=0
         self.speed=5
+        #属于那个生成
+        self.belong=None
 
     def down(self):
         self.rect.top+=self.speed

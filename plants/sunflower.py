@@ -1,5 +1,4 @@
 import pygame
-#̫����
 class SunFlower(pygame.sprite.Sprite):
     def __init__(self):
         super(SunFlower, self).__init__()
@@ -9,3 +8,5 @@ class SunFlower(pygame.sprite.Sprite):
         self.zone=(0,0)
         self.blood=50
         self.isLive=True
+        self.isProductSum=False
+
