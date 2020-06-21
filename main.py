@@ -19,6 +19,8 @@ bg_path = 'images/Background.jpg'
 backgroup = pygame.image.load(bg_path).convert()
 # 卡槽
 card_slot = pygame.image.load('images/cardSlot.png').convert()
+# 暂停
+pause_draw = pygame.image.load('images/pause.png').convert_alpha()
 # card
 card = pygame.image.load('images/cards/card_peashooter.png').convert()
 card1 = pygame.image.load('images/cards/card_sunflower.png').convert()
@@ -74,6 +76,7 @@ def main():
 
     z=Zone()
     bulletList=[]
+    PAUSED=False
 
     while 1:
 
@@ -108,11 +111,20 @@ def main():
             #             flower_product_list.append(sun)
             #             flower.isProductSum=True
 
-
+            if event.type==pygame.KEYDOWN:
+                # print('kit what:',event.key)
+                if event.key==27:
+                    # print('pause')
+                    PAUSED=not PAUSED
 
 
             if event.type == pygame.MOUSEMOTION:
-
+                # print(x,y)
+                #537 378 749 401
+                if 537<=x<=749 and 378<=y<=401:
+                    if press[0]:
+                        # print('back')
+                        PAUSED=not PAUSED
                 # if z.is_card_slot_zone(x,y,card_slot.get_rect().width,card_slot.get_rect().height):
                 #     print('cardslot zone!')
                 # elif z.is_plant_zone(x,y):
@@ -211,95 +223,99 @@ def main():
 
 
 
-
-        # 绘制背景
-        screen.blit(backgroup, (0, 0))
-        # 卡槽
-        screen.blit(card_slot, (250, 0))
-        # card
-        screen.blit(card, (330, 10))
-        screen.blit(card1, (400, 10))
-        # sunnum
-        screen.blit(fontImg, (280, 60))
-
-
-        if index > 23:
-            index = 0
-        # screen.blit(peashooter.images[index % 13], peashooter.rect)
-        # screen.blit(sunflower.images[index % 18], sunflower.rect)
-        # screen.blit(wallnut.images[index % 16], wallnut.rect)
-
-        #它是不断产生？？
-        #它是重叠起来看不出，其实是一直产生的，我们要控制它生成1个，
-        # print('listlen:',len(flower_product_list))
-
-        for image in clickimage:
-            screen.blit(image.images[0], (x, y))
-        for p in p1:
-            screen.blit(p.images[0], p.zone)
-        #豌豆
-        for pea in peaList:
-            if pea.isLive:
-                if index%99==1:
-                    bullet = pea.shot()
-                    bulletList.append(bullet)
-                screen.blit(pea.images[index % 13], pea.zone)
-            else:
-                peaList.remove(pea)
-                enemy_zombie_list.remove(pea)
-        #太阳花
-        # print('产出的能量数量',len(flower_product_list))
-        for sunFlower in sunFlowerList:
-            if sunFlower.isLive:
-
-                screen.blit(sunFlower.images[index % 18], sunFlower.zone)
-                # print('{},位置的花朵,是否产出了太阳{},速率{}'.format(sunFlower.zone,sunFlower.isProductSum,sunFlower.product_sun_rate))
-                if not sunFlower.isProductSum:
-                    sunFlower.product_sun_rate+=1
-                    if sunFlower.product_sun_rate==100:
-                        sunFlower.productSun(flower_product_list)
-                        sunFlower.isProductSum=True
-                        sunFlower.product_sun_rate=0
-
-            else:
-                sunFlowerList.remove(sunFlower)
-                enemy_zombie_list.remove(sunFlower)
-
-        print('num:',len(sunList))
-        for sun in sunList:
-            screen.blit(sun.images[index % 22], sun.rect)
-            sun.down()
-            if sun.rect.top>600:
-                sunList.remove(sun)
-        #花朵生的太阳渲染
-        for sun in flower_product_list:
-            screen.blit(sun.images[index % 22], sun.rect)
-
-        for bullet in bulletList:
-            if bullet.status:
-                screen.blit(bullet.image,bullet.rect)
-                bullet.move()
-                bullet.hit(zombieList)
-            else:
-                bulletList.remove(bullet)
-
-        #僵尸
-        for zombie in zombieList:
-            if zombie.islive:
-                zombie.changimage()
-                screen.blit(zombie.images[index % 21], zombie.rect)
-                zombie.move()
-                zombie.attack(enemy_zombie_list)
-            else:
-                zombieList.remove(zombie)
+        if not PAUSED:
+            # 绘制背景
+            screen.blit(backgroup, (0, 0))
+            # 卡槽
+            screen.blit(card_slot, (250, 0))
+            # card
+            screen.blit(card, (330, 10))
+            screen.blit(card1, (400, 10))
+            # sunnum
+            screen.blit(fontImg, (280, 60))
 
 
-        # print(len(bulletList))
+            if index > 23:
+                index = 0
+            # screen.blit(peashooter.images[index % 13], peashooter.rect)
+            # screen.blit(sunflower.images[index % 18], sunflower.rect)
+            # screen.blit(wallnut.images[index % 16], wallnut.rect)
+
+            #它是不断产生？？
+            #它是重叠起来看不出，其实是一直产生的，我们要控制它生成1个，
+            # print('listlen:',len(flower_product_list))
+
+            for image in clickimage:
+                screen.blit(image.images[0], (x, y))
+            for p in p1:
+                screen.blit(p.images[0], p.zone)
+            #豌豆
+            for pea in peaList:
+                if pea.isLive:
+                    if index%99==1:
+                        bullet = pea.shot()
+                        bulletList.append(bullet)
+                    screen.blit(pea.images[index % 13], pea.zone)
+                else:
+                    peaList.remove(pea)
+                    enemy_zombie_list.remove(pea)
+            #太阳花
+            # print('产出的能量数量',len(flower_product_list))
+            for sunFlower in sunFlowerList:
+                if sunFlower.isLive:
+
+                    screen.blit(sunFlower.images[index % 18], sunFlower.zone)
+                    # print('{},位置的花朵,是否产出了太阳{},速率{}'.format(sunFlower.zone,sunFlower.isProductSum,sunFlower.product_sun_rate))
+                    if not sunFlower.isProductSum:
+                        sunFlower.product_sun_rate+=1
+                        if sunFlower.product_sun_rate==100:
+                            sunFlower.productSun(flower_product_list)
+                            sunFlower.isProductSum=True
+                            sunFlower.product_sun_rate=0
+
+                else:
+                    sunFlowerList.remove(sunFlower)
+                    enemy_zombie_list.remove(sunFlower)
+
+            # print('num:',len(sunList))
+            for sun in sunList:
+                screen.blit(sun.images[index % 22], sun.rect)
+                sun.down()
+                if sun.rect.top>600:
+                    sunList.remove(sun)
+            #花朵生的太阳渲染
+            for sun in flower_product_list:
+                screen.blit(sun.images[index % 22], sun.rect)
+
+            for bullet in bulletList:
+                if bullet.status:
+                    screen.blit(bullet.image,bullet.rect)
+                    bullet.move()
+                    bullet.hit(zombieList)
+                else:
+                    bulletList.remove(bullet)
+
+            #僵尸
+            for zombie in zombieList:
+                if zombie.islive:
+                    zombie.changimage()
+                    screen.blit(zombie.images[index % 21], zombie.rect)
+                    zombie.move()
+                    zombie.attack(enemy_zombie_list)
+                else:
+                    zombieList.remove(zombie)
+
+
+            # print(len(bulletList))
+
+
+
+
+            index += 1
+        else:
+            screen.blit(pause_draw,(500,130))
+
         pygame.display.update()
-
-
-
-        index += 1
 
 
 if __name__ == '__main__':
